@@ -18,6 +18,7 @@ public class OperationController {
     @PostMapping("/login")
     public ResponseEntity<Void> login(@RequestParam("login") String login, @RequestParam("password") String password, @RequestHeader("Origin") String origin) {
         // TODO
+        return null;
     }
 
     /**
@@ -35,5 +36,6 @@ public class OperationController {
     @GetMapping("/authenticate")
     public ResponseEntity<Void> authenticate(@RequestParam("token") String token, @RequestParam("origin") String origin) {
         // TODO
+        return null;
     }
 }
