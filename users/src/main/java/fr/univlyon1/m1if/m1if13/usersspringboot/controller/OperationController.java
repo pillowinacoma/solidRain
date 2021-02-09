@@ -1,5 +1,6 @@
 package fr.univlyon1.m1if.m1if13.usersspringboot.controller;
 
+import fr.univlyon1.m1if.m1if13.usersspringboot.DAO.UserDao;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 public class OperationController {
 
     // TODO récupérer le DAO...
+    UserDao users;
 
     /**
      * Procédure de login "simple" d'un utilisateur
