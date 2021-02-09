@@ -1,4 +1,4 @@
-package usersspringboot.model;
+package fr.univlyon1.m1if.m1if13.usersspringboot.model;
 
 import javax.naming.AuthenticationException;
 

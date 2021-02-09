@@ -1,4 +1,4 @@
-package usersspringboot.controller;
+package fr.univlyon1.m1if.m1if13.usersspringboot.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
