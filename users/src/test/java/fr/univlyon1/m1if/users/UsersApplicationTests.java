@@ -1,10 +1,10 @@
-package fr.univlyon1.m1if.mif13;
+package fr.univlyon1.m1if.users;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class Mif13ApplicationTests {
+class UsersApplicationTests {
 
 	@Test
 	void contextLoads() {

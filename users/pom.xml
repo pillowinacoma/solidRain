@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>fr.univlyon1.m1if</groupId>
-	<artifactId>mif13</artifactId>
+	<artifactId>users</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>mif13</name>
+	<name>users</name>
 	<description>Projet de M1IF13 - Programmation Web avancé et mobile</description>
 	<properties>
 		<java.version>11</java.version>
