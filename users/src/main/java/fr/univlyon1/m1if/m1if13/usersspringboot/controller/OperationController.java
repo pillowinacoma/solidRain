@@ -60,8 +60,11 @@ public class OperationController {
     public ResponseEntity<Void> logout(@RequestParam("token") String token) {
         DecodedJWT jwt = JWT.decode(token);
         String loginToDeco = jwt.getClaim("login").asString();
-        users.get(loginToDeco).get().disconnect();
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        if (users.get(loginToDeco).isPresent()) {
+            users.get(loginToDeco).get().disconnect();
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     /**
@@ -72,7 +75,6 @@ public class OperationController {
      */
     @GetMapping("/authenticate")
     public ResponseEntity<Void> authenticate(@RequestParam("token") String token, @RequestParam("origin") String origin) {
-        // TODO
         String verify = jwt.verifyToken(token, origin);
 
         if(verify.equals("Not valid")) {

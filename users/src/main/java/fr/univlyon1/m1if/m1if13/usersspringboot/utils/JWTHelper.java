@@ -4,10 +4,15 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
+import org.springframework.web.bind.annotation.RequestHeader;
+
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Classe qui centralise les opérations de validation et de génération d'un token "métier", c'est-à-dire dédié à cette application.
@@ -30,12 +35,12 @@ public class JWTHelper {
     public static String verifyToken(String token, @NotNull String origin) throws NullPointerException, JWTVerificationException {
         JWTVerifier authenticationVerifier = JWT.require(algorithm)
                 .withIssuer(ISSUER)
-                .withAudience(origin) // Non-reusable verifier instance
+                .withClaim("origin", origin) // Non-reusable verifier instance
                 .build();
         try {
             authenticationVerifier.verify(token); // Lève une NullPointerException si le token n'existe pas, et une JWTVerificationException s'il est invalide
             DecodedJWT jwt = JWT.decode(token); // Pourrait lever une JWTDecodeException mais comme le token est vérifié avant, cela ne devrait pas arriver
-            return jwt.getClaim("sub").asString();
+            return jwt.getClaim("login").asString();
         } catch (Exception e) {
             if(e instanceof JWTVerificationException) {
                 return "Not valid";
@@ -57,11 +62,26 @@ public class JWTHelper {
     public static String generateToken(String login, String origin) throws JWTCreationException {
         return JWT.create()
                 .withIssuer(ISSUER)
-                .withSubject(login)
-                .withAudience(origin)
+                .withClaim("login", login)
+                .withClaim("origin", origin)
                 .withExpiresAt(new Date(new Date().getTime() + LIFETIME))
                 .sign(algorithm);
     }
 
+
+    /**
+     * Retourne la liste des claims dans le payload du token
+     *
+     * @param token le token
+     */
+    public static Map<String, Claim> getClaims (String token) throws NullPointerException, JWTVerificationException{
+       try {
+           JWTVerifier verifier = JWT.require(algorithm).withIssuer(ISSUER).build();
+           return verifier.verify(Objects.requireNonNull(token)).getClaims();
+       }catch(Exception e){
+           e.printStackTrace();
+           return null;
+       }
+    }
 }
 

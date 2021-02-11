@@ -16,6 +16,7 @@ public class UserDao implements Dao<User>{
     public UserDao(){
         users.add(new User("user1", "pwd1"));
         users.add(new User("user2", "pwd2"));
+        users.add(new User("MFDOOM", "villain"));
     }
 
 
