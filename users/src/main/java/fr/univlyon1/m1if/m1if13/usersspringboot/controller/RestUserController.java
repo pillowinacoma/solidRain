@@ -12,15 +12,19 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 import java.util.Set;
 
+
 @RestController
 public class RestUserController {
 
     @Autowired
     UserDao userDAO;
 
-    @GetMapping("/users")
+    @GetMapping(path = "/users",
+                headers = "Accept=application/json, application/xml",
+                produces={"application/json", "application/xml"})
     public Set<String> getUsers(){
-        return userDAO.getAll();
+        Set<String> setOfUsers = userDAO.getAll();
+        return setOfUsers;
     }
 
     @PostMapping(path = "/users")
@@ -29,7 +33,7 @@ public class RestUserController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PutMapping("user/{login}")
+    @PutMapping(path = "user/{login}")
     public ResponseEntity<Void> updateUser(@PathVariable String login, @RequestHeader("Authorization") String token){
         Map<String, Claim> claims = JWTHelper.getClaims(token);
         String currentLogin = claims.get("login").asString();
@@ -40,7 +44,7 @@ public class RestUserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
-    @DeleteMapping("user/{login}")
+    @DeleteMapping(path = "user/{login}")
     public ResponseEntity<Void> deleteUser (@PathVariable String login){
         if(userDAO.get(login).isPresent()){
             User u = userDAO.get(login).get();

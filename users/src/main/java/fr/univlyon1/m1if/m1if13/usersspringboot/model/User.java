@@ -1,7 +1,9 @@
 package fr.univlyon1.m1if.m1if13.usersspringboot.model;
 
 import javax.naming.AuthenticationException;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement
 public class User {
     private String login, password;
     // Permet d'invalider une connexion même si le token est toujours valide
