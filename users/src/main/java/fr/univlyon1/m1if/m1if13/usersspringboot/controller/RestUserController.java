@@ -2,6 +2,7 @@ package fr.univlyon1.m1if.m1if13.usersspringboot.controller;
 
 import com.auth0.jwt.interfaces.Claim;
 import fr.univlyon1.m1if.m1if13.usersspringboot.DAO.UserDao;
+import fr.univlyon1.m1if.m1if13.usersspringboot.exception.BadRequestException;
 import fr.univlyon1.m1if.m1if13.usersspringboot.exception.UserNotFoundException;
 import fr.univlyon1.m1if.m1if13.usersspringboot.model.User;
 import fr.univlyon1.m1if.m1if13.usersspringboot.utils.JWTHelper;
@@ -33,10 +34,14 @@ public class RestUserController {
             Optional<User> u = userDAO.get(userLogin);
             if(!u.isPresent()){
                 throw new UserNotFoundException("Le login " + userLogin + " n'a pas été trouvé");
+            }if(userLogin == ""){
+                throw new BadRequestException("Le login est manquant");
             }
             responseEntity = ResponseEntity.status(HttpStatus.OK).body(u.get());
         }catch (UserNotFoundException e){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found Exception", e);
+        }catch (BadRequestException e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad request ", e);
         }
         return responseEntity;
     }

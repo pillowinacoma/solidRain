@@ -21,6 +21,12 @@ public class CustomResponseExceptionHandler extends ResponseEntityExceptionHandl
 
     }
 
+    @ExceptionHandler(BadRequestException.class)
+    public final ResponseEntity<Object> handleBadRequest(BadRequestException ex, WebRequest req) throws  Exception{
+        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(), req.getDescription(false));
+        return new ResponseEntity<Object>(exceptionResponse, HttpStatus.BAD_REQUEST);
+
+    }
     @ExceptionHandler(UserNotFoundException.class)
     public final ResponseEntity<Object> handleUserNotFound(UserNotFoundException ex, WebRequest req) throws  Exception{
         ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(), req.getDescription(false));
