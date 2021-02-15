@@ -50,7 +50,7 @@ public class OperationController {
                 throw new UserNotFoundException("Le login " + login + " n'a pas été trouvé");
             }
         } catch (AuthenticationException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Ne peut pas générer le token", e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Mot de passe érronné", e);
         } catch (UserNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found Exception", e);
         }

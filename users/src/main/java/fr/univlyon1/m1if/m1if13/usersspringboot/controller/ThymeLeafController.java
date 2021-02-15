@@ -5,24 +5,29 @@ import fr.univlyon1.m1if.m1if13.usersspringboot.exception.BadRequestException;
 import fr.univlyon1.m1if.m1if13.usersspringboot.exception.UserNotFoundException;
 import fr.univlyon1.m1if.m1if13.usersspringboot.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.Optional;
 
 @Controller
-public class ThymeLeafController {
+public class ThymeLeafController /*implements ErrorController*/ {
 
     @Autowired
     UserDao userDAO;
 
-    @GetMapping(path = {"/", "/users"}, produces = {"text/html"})
+
+    @GetMapping(path = {"/users"}, produces = {"text/html"})
     public String getUsers(/*@RequestParam(value = "name",
             defaultValue = "World", required = true) String name, */Model theModel) {
         theModel.addAttribute("users",userDAO.getAll());
@@ -37,7 +42,7 @@ public class ThymeLeafController {
             }if(userLogin == ""){
                 throw new BadRequestException("Le login est manquant");
             }
-            theModel.addAttribute("user", u.get().getLogin());
+            theModel.addAttribute("user", u.get());
         }catch (UserNotFoundException e){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found Exception", e);
         }catch (BadRequestException e){
@@ -45,4 +50,5 @@ public class ThymeLeafController {
         }
         return "user";
     }
-}
+
+    }

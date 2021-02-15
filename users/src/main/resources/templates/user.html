@@ -8,7 +8,8 @@
 
 <body>
 
-<p th:text="'requested user : ' + ${user}" />
+<p th:text="'requested user : ' + ${user.getLogin()}" />
+<p th:text="'connected : ' + ${user.isConnected()}" />
 
 </body>
 

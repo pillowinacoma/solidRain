@@ -54,14 +54,13 @@ public class RestUserController {
         return setOfUsers;
     }
 
-    @PostMapping(path = "/users", consumes = {"application/json", "application/x-www-form-urlencoded"})
+    @PostMapping(path = "/users")
     public ResponseEntity<Void> createUser(@RequestParam("login") String login, @RequestParam("password") String password){
         userDAO.save(new User(login, password));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PutMapping(path = "user/{login}",
-                consumes = {"application/json", "application/x-www-form-urlencoded"})
+    @PutMapping(path = "users/{login}")
     public ResponseEntity<Void> updateUser(@PathVariable String login, @RequestHeader("Authorization") String token){
         Map<String, Claim> claims = JWTHelper.getClaims(token);
         String currentLogin = claims.get("login").asString();
@@ -78,7 +77,7 @@ public class RestUserController {
     }
 
 
-    @DeleteMapping(path = "user/{login}", consumes = {"application/json", "application/x-www-form-urlencoded"})
+    @DeleteMapping(path = "users/{login}")
     public ResponseEntity<Void> deleteUser (@PathVariable String login){
         try {
             if (userDAO.get(login).isPresent()) {
@@ -92,4 +91,6 @@ public class RestUserController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found Exception", e);
         }
     }
+
+
 }
