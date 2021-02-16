@@ -1,0 +1,16 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Users</title>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+
+<p th:text="'requested user : ' + ${user.getLogin()}" />
+<p th:text="'connected : ' + ${user.isConnected()}" />
+
+</body>
+
+</html>
