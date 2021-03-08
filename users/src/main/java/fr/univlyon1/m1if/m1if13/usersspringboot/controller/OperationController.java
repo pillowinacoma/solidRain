@@ -29,8 +29,12 @@ import javax.naming.AuthenticationException;
                 title = "Spring User Docs",
                 version = "1.0.0",
                 description = "Api qui prend charge des ressources utilisateur(user)"),
-        servers = {@Server(description = "localhost", url = "http://localhost:8080")})
+        servers = {@Server(description = "localhost", url = "http://localhost:8080"),
+                @Server(description = "VM(http)", url ="http://192.168.75.9"),
+                @Server(description = "VM(https)", url ="https://192.168.75.9")
+        })
 @Tag(name = "operation", description = "l'API Operations")
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:80", "http://localhost:8080", "http://localhost" , "http://192.168.75.9" , "https://192.168.75.9"})
 @Controller
 public class OperationController {
 
@@ -68,7 +72,8 @@ public class OperationController {
                 String token = jwt.generateToken(user.getLogin(), origin);
 
                 HttpHeaders headers = new HttpHeaders();
-                headers.add("Authentication", token);
+                headers.add("Authorization", "Bearer " + token);
+                headers.add("Access-Control-Expose-Headers", "Authorization");
                 result = ResponseEntity.status(HttpStatus.NO_CONTENT).headers(headers).build();
             } else {
                 throw new UserNotFoundException("Le login " + login + " n'a pas été trouvé");
@@ -94,7 +99,8 @@ public class OperationController {
             @ApiResponse(responseCode = "404", description = "User not found", content = {@Content})
     })
     @DeleteMapping("/logout")
-    public ResponseEntity<Void> logout(@RequestParam("token") String token) {
+    public ResponseEntity<Void> logout(@RequestHeader("Authorization") String auth) {
+        String token = auth.substring(7);
         DecodedJWT jwt = JWT.decode(token);
         String loginToDeco = jwt.getClaim("login").asString();
         if (users.get(loginToDeco).isPresent()) {
@@ -130,7 +136,9 @@ public class OperationController {
         } else if (verify.equals("Bad token")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } else {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Access-Control-Expose-Headers", "*");
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).headers(headers).build();
         }
     }
 }
