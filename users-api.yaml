@@ -1,0 +1,213 @@
+openapi: 3.0.1
+info:
+  title: Spring User Docs
+  description: Api qui prend charge des ressources utilisateur(user)
+  version: 1.0.0
+servers:
+- url: http://localhost:8080
+  description: localhost
+  variables: {}
+- url: http://192.168.75.9
+  description: VM(http)
+  variables: {}
+- url: https://192.168.75.9
+  description: VM(https)
+  variables: {}
+tags:
+- name: user
+  description: l'API user
+- name: operation
+  description: l'API Operations
+paths:
+  /users/{login}:
+    get:
+      tags:
+      - user
+      summary: Get user by login
+      operationId: getUser
+      parameters:
+      - name: login
+        in: path
+        description: the login of the user
+        required: true
+        schema:
+          type: string
+      responses:
+        "404":
+          description: utilisateur non trouvé
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/User'
+            text/html: {}
+    put:
+      tags:
+      - user
+      summary: Change user login
+      operationId: updateUser
+      parameters:
+      - name: login
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      responses:
+        "400":
+          description: utilisateur non trouvé
+        "200":
+          description: successful operation
+    delete:
+      tags:
+      - user
+      summary: Delete user
+      operationId: deleteUser
+      parameters:
+      - name: login
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "400":
+          description: utilisateur non trouvé
+        "200":
+          description: successful operation
+  /users:
+    get:
+      tags:
+      - user
+      summary: Get all users
+      operationId: getUsers
+      responses:
+        "200":
+          description: utilisateur existe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDao'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/UserDao'
+            text/html: {}
+    post:
+      tags:
+      - user
+      summary: Create user
+      operationId: createUser
+      parameters:
+      - name: login
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: password
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "201":
+          description: User created
+  /login:
+    post:
+      tags:
+      - operation
+      summary: Connection d'un utilisateur
+      description: Renvoie le token JWT en cas de succes (204)
+      operationId: login
+      parameters:
+      - name: login
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: password
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: Origin
+        in: header
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: Successful operation
+        "404":
+          description: User not found
+        "400":
+          description: Wrong pass word
+  /authenticate:
+    get:
+      tags:
+      - operation
+      summary: Authentification d'un utilisateur
+      description: Verifie que le token De l'utilisateur est correct
+      operationId: authenticate
+      parameters:
+      - name: token
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: origin
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: Successful operation
+        "401":
+          description: Unauthorised (token non valide)
+        "400":
+          description: Bad token
+  /logout:
+    delete:
+      tags:
+      - operation
+      summary: Déconnection d'un utilisateur
+      description: Change le status de l'utilisateur à Déconnecté
+      operationId: logout
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: Successful operation
+        "404":
+          description: User not found
+components:
+  schemas:
+    UserDao:
+      type: object
+      properties:
+        users:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+    User:
+      type: object
+      properties:
+        login:
+          type: string
+        password:
+          type: string
+          writeOnly: true
+        connected:
+          type: boolean

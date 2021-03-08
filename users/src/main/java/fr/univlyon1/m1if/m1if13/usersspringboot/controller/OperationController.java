@@ -137,7 +137,7 @@ public class OperationController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } else {
             HttpHeaders headers = new HttpHeaders();
-            headers.add("Access-Control-Expose-Headers", "*");
+            headers.add("Access-Control-Expose-Headers", "Location");
             return ResponseEntity.status(HttpStatus.NO_CONTENT).headers(headers).build();
         }
     }
