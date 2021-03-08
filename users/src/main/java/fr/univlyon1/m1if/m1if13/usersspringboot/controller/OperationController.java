@@ -34,7 +34,6 @@ import javax.naming.AuthenticationException;
 @Controller
 public class OperationController {
 
-    // TODO récupérer le DAO...
     @Autowired
     UserDao users;
     JWTHelper jwt;
@@ -77,7 +76,7 @@ public class OperationController {
         } catch (AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mot de passe érronné", e);
         } catch (UserNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found Exception", e);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Le login " + login + " n'a pas été trouvé", e);
         }
         return result;
     }
