@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Test CORS</title>
+<style>
+	td { padding: 0 10px; }
+</style>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script>
+var glob = null;
+
+function testUserGet() {
+  fetch($('#base').val() + '/users/' + $('#login').val()).then(function(response) {
+    if(response.ok) {
+        response.json().then(function(data) {
+        	document.getElementById("result").innerHTML = "OK";
+			document.getElementById("connected").innerText = data['connected'];
+        });
+    } else {
+  	  document.getElementById("result").innerHTML = "KO";
+      console.log('Network error');
+    }
+  })
+  .catch(function(error) {
+    document.getElementById("result").innerHTML = "KO";
+    console.log('Fetch error:' + error.message);
+  });
+}
+
+function testLogin() {
+	document.getElementById("result").innerHTML = "KO"
+
+	$.post($('#base').val() + '/login', 
+	'login=' + $('#login').val() + '&password=' + $('#password').val(), 
+	function(data, status, jqXHR){
+		glob = jqXHR;
+		$('#origin').val(window.origin);
+		$('#token').val(jqXHR.getResponseHeader('Authorization').substring(7));
+		document.getElementById("result").innerHTML = "OK";
+	});
+}
+
+function testLogout() {
+	document.getElementById("result").innerHTML = "KO";
+	$.ajax($('#base').val() + "/logout", {
+		headers: {
+			"Authorization": "Bearer " + $('#token').val()
+		},
+		method: "DELETE",
+		success: function() {
+			document.getElementById("result").innerHTML = "OK";
+		}
+	});
+}
+
+function testAuthenticate() {
+	$('#url').html('');
+	document.getElementById("result").innerHTML = "KO";
+	$.get($('#base').val() + "/authenticate?token=" + $('#token').val() + "&origin=" + $('#origin').val(), null, function(data, status, jqXHR) {
+		$('#url').html('<a href="' + jqXHR.getResponseHeader('Location') + '" target="_blank">' + $('#login').val() + '</a>');
+			document.getElementById("result").innerHTML = "OK";
+		}
+	);
+}
+</script>
+</head>
+<body>
+<h1>Test Spring Boot users server in CORS</h1>
+<h2>Test results: <span style="color: red;" id="result"></span></h2>
+<p>See Developer's tools for failure details</p>
+<hr>
+<section>
+	<h2>Parameters / results</h2>
+	<table>
+		<tr><td>URL du serveur</td><td><input id="base" type="text" value="http://localhost:8080"></td></tr>
+		<tr><td>Login</td><td><input id="login" type="text"></td></tr>
+		<tr><td>Password</td><td><input id="password" type="password"></td></tr>
+		<tr><td>Origin</td><td><input id="origin" type="text"></td></tr>
+		<tr><td>Token</td><td><input id="token" type="text"></td></tr>
+		<tr><td>Connected</td><td id="connected"></td></tr>
+		<tr><td>Location</td><td id="url"></td></tr>
+	</table>
+</section>
+<hr>
+<section>
+	<h2>Launch tests</h2>
+	<h3>User Controller</h3>
+	<ul>
+		<li><strong>Get user by login:</strong> <button onclick="testUserGet()">Test</button> (required field: Login)</li>
+	</ul>
+	<h3>Operation Controller</h3>
+	<ul>
+		<li><strong>Login (POST):</strong> <button onclick="testLogin()">Test</button> (required fields: Login, Password)</li>
+		<li><strong>Logout (DELETE):</strong> <button onclick="testLogout()">Test</button> (required field: Token)</li>
+		<li><strong>Authenticate (GET):</strong> <button onclick="testAuthenticate()">Test</button> (required fields: Login, Password, Origin)</li>
+	</ul>
+</section>
+</body>
+</html>
