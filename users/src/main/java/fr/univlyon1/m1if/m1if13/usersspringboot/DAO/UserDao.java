@@ -28,10 +28,18 @@ public class UserDao implements Dao<User>{
     }
 
     @Override
-    public Set<String> getAll() {
+    public Set<String> getUsers() {
         HashSet<String> res = new HashSet<String>();
         for (User u : users)
             res.add(u.getLogin());
+
+        return res;
+    }
+
+    public Set<User> get() {
+        HashSet<User> res = new HashSet<User>();
+        for (User u : users)
+            res.add(u);
 
         return res;
     }
