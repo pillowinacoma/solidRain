@@ -21,8 +21,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.naming.AuthenticationException;
+import java.net.URI;
 
 @OpenAPIDefinition(
         info = @Info(
@@ -136,7 +138,12 @@ public class OperationController {
         } else if (verify.equals("Bad token")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } else {
+            DecodedJWT jwty = JWT.decode(token);
+            String loginToSend = jwty.getClaim("login").asString();
+            URI location = ServletUriComponentsBuilder
+                    .fromCurrentContextPath().build().toUri();
             HttpHeaders headers = new HttpHeaders();
+            headers.add("Location", location.toString() + "/users/" + loginToSend);
             headers.add("Access-Control-Expose-Headers", "Location");
             return ResponseEntity.status(HttpStatus.NO_CONTENT).headers(headers).build();
         }

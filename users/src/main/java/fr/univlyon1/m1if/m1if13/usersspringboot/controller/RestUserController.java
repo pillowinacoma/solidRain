@@ -74,7 +74,7 @@ public class RestUserController {
                             @Content(mediaType = "text/html")}) })
     @GetMapping(path = "/users",
             produces = {"application/json", "application/xml"})
-    @CrossOrigin(origins = {"http://localhost" , "http://192.168.75.9" , "https://192.168.75.9"})
+    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:80", "http://localhost:8080", "http://localhost" , "http://192.168.75.9" , "https://192.168.75.9"})
     public ResponseEntity<Object> getUsers() {
         ResponseEntity<Object> res = null;
         Set<User> setOfUsers = userDAO.get();
