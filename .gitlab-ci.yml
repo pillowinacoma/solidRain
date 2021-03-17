@@ -12,8 +12,3 @@ deploy:
     - mvn clean package
     - cd target/
     - scp -o StrictHostKeyChecking=no -i $CI_SSH_KEY -r v1.war gitlabci@192.168.75.9:/opt/apache-tomcat-9.0.38/webapps/
-  only:
-    refs:
-      - master
-    changes:
-      - users/*
