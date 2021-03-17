@@ -1,81 +1,19 @@
-image: maven:latest
-
-
-before_script:
-  ##
-  ## Install ssh-agent if not already installed, it is required by Docker.
-  ## (change apt-get to yum if you use an RPM-based image)
-  ##
-  - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
-
-  ##
-  ## Run ssh-agent (inside the build environment)
-  ##
-  - eval $(ssh-agent -s)
-
-  ##
-  ## Add the SSH key stored in SSH_PRIVATE_KEY variable to the agent store
-  ## We're using tr to fix line endings which makes ed25519 keys work
-  ## without extra base64 encoding.
-  ## https://gitlab.com/gitlab-examples/ssh-private-key/issues/1#note_48526556
-  ##
-  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-
-  ##
-  ## Create the SSH directory and give it the right permissions
-  ##
-  - mkdir -p ~/.ssh
-  - chmod 700 ~/.ssh
-
-  # Build JAVA applications using Apache Maven (http://maven.apache.org)
-# For docker image tags see https://hub.docker.com/_/maven/
-#
-# For general lifecycle information see https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
-
-# This template will build and test your projects
-# * Caches downloaded dependencies and plugins between invocation.
-# * Verify but don't deploy merge requests.
-# * Deploy built artifacts from master branch only.
-
-variables:
-  # This will suppress any download for dependencies and plugins or upload messages which would clutter the console log.
-  # `showDateTime` will show the passed time in milliseconds. You need to specify `--batch-mode` to make this work.
-  MAVEN_OPTS: "-Dhttps.protocols=TLSv1.2 -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true"
-  # As of Maven 3.3.0 instead of this you may define these options in `.mvn/maven.config` so the same config is used
-  # when running from the command line.
-  # `installAtEnd` and `deployAtEnd` are only effective with recent version of the corresponding plugins.
-  MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true"
-
-cache:
-  paths:
-    - .m2/repository
-  key : "$CI_JOB_NAME"
-
-nginx :
-  stage : build
-  script : 
-    - ssh -t -o StrictHostKeyChecking=no gitlabci@192.168.75.9 "systemctl status nginx"
-
-build: 
-  stage : build
-  script : 
-    - ./setup-mvn-proxy.sh
-    - cd users/
-    - mvn package
-    - scp -o StrictHostKeyChecking=no target/users-0.0.1-SNAPSHOT.jar gitlabci@192.168.75.9:/home/etudiant
-    
-curl:
-  stage : test
-  script : 
-    - ssh -o StrictHostKeyChecking=no gitlabci@192.168.75.9 'java -jar users-0.0.1-SNAPSHOT.jar > /dev/null & sleep 10 ; curl -s -o /dev/null -w "%{http_code}\n" http://192.168.75.9 200'
-  after_script :
-    - eval $(ssh-agent -s)
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-    - mkdir -p ~/.ssh
-    - chmod 700 ~/.ssh
-    - ssh -t -o StrictHostKeyChecking=no gitlabci@192.168.75.9 './shutdowntomcat.sh'
-
 deploy:
-  stage : deploy
-  script : 
-    - ssh -t -o StrictHostKeyChecking=no gitlabci@192.168.75.9 'java -jar users-0.0.1-SNAPSHOT.jar > /dev/null & sleep 2'
+  stage: deploy
+  image: ubuntu:latest
+  before_script:
+    - chmod 400 $CI_SSH_KEY
+    - chmod +x setup-mvn-proxy.sh
+    - ./setup-mvn-proxy.sh
+    - apt-get update -qq
+    - apt-get install -y -qq openssh-client maven
+  script:
+    - cd users
+    - mvn clean package
+    - cd target/
+    - scp -o StrictHostKeyChecking=no -i $CI_SSH_KEY -r v1.war gitlabci@192.168.75.9:/opt/apache-tomcat-9.0.38/webapps/
+  only:
+    refs:
+      - master
+    changes:
+      - users/*
