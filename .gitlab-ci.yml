@@ -1,0 +1,14 @@
+deploy:
+  stage: deploy
+  image: ubuntu:latest
+  before_script:
+    - chmod 400 $CI_SSH_KEY
+    - chmod +x setup-mvn-proxy.sh
+    - ./setup-mvn-proxy.sh
+    - apt-get update -qq
+    - apt-get install -y -qq openssh-client maven
+  script:
+    - cd users
+    - mvn clean package
+    - cd target/
+    - scp -o StrictHostKeyChecking=no -i $CI_SSH_KEY -r v1.war gitlabci@192.168.75.9:/opt/apache-tomcat-9.0.38/webapps/
