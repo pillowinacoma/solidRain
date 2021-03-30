@@ -115,7 +115,7 @@ public class OperationController {
     /**
      * Méthode destinée au serveur Node pour valider l'authentification d'un utilisateur.
      *
-     * @param token  Le token JWT qui se trouve dans le header "Authentication" de la requête
+     * @param auth  Le token JWT qui se trouve dans le header "Authentication" de la requête
      * @param origin L'origine de la requête (pour la comparer avec celle du client, stockée dans le token JWT)
      * @return Une réponse vide avec un code de statut approprié (204, 400, 401).
      */
@@ -130,7 +130,8 @@ public class OperationController {
             @ApiResponse(responseCode = "401", description = "Unauthorised (token non valide)", content = {@Content})
     })
     @GetMapping("/authenticate")
-    public ResponseEntity<Void> authenticate(@RequestParam("token") String token, @RequestParam("origin") String origin) {
+    public ResponseEntity<Void> authenticate(@RequestParam("token") String auth, @RequestParam("origin") String origin) {
+        String token = auth.substring(7);
         String verify = jwt.verifyToken(token, origin);
 
         if (verify.equals("Not valid")) {
