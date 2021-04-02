@@ -131,7 +131,7 @@ public class OperationController {
             @ApiResponse(responseCode = "400", description = "Bad token", content = {@Content}),
             @ApiResponse(responseCode = "401", description = "Unauthorised (token non valide)", content = {@Content})
     })
-    @GetMapping(value = "/authenticate", consumes = {"multipart/form-data", "application/x-www-form-urlencoded"})
+    @GetMapping(value = "/authenticate")
     public ResponseEntity<Void> authenticate(@RequestParam("token") String auth, @RequestParam("origin") String origin) {
         String token = auth.substring(7);
         String verify = jwt.verifyToken(token, origin);
