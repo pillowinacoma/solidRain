@@ -44,6 +44,8 @@ public class JWTHelper {
         } catch (Exception e) {
             if(e instanceof JWTVerificationException) {
                 return "Not valid";
+            } else if(e instanceof NullPointerException){
+                return "No Token";
             } else {
                 return "Bad token";
             }

@@ -36,6 +36,7 @@ import java.util.Set;
                 @Server(description = "VM(https)", url ="https://192.168.75.9")
         })
 @Tag(name = "user", description = "l'API user")
+@CrossOrigin(origins = {"http://localhost:3376","http://localhost:3000", "http://localhost:80", "http://localhost:8080", "http://localhost" , "http://192.168.75.9" , "https://192.168.75.9"})
 @RestController
 public class RestUserController {
 
@@ -51,7 +52,6 @@ public class RestUserController {
             @ApiResponse(responseCode = "404", description = "utilisateur non trouvé", content = @Content)})
     @GetMapping(path = "/users/{login}",
             produces = {"application/json", "application/xml"})
-    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:80", "http://localhost:8080", "http://localhost" , "http://192.168.75.9" , "https://192.168.75.9"})
     public ResponseEntity<Object> getUser(@Parameter(description = "the login of the user") @PathVariable(name = "login") String userLogin) {
         ResponseEntity<Object> responseEntity = null;
         try {
@@ -74,7 +74,6 @@ public class RestUserController {
                             @Content(mediaType = "text/html")}) })
     @GetMapping(path = "/users",
             produces = {"application/json", "application/xml"})
-    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:80", "http://localhost:8080", "http://localhost" , "http://192.168.75.9" , "https://192.168.75.9"})
     public ResponseEntity<Object> getUsers() {
         ResponseEntity<Object> res = null;
         Set<User> setOfUsers = userDAO.get();

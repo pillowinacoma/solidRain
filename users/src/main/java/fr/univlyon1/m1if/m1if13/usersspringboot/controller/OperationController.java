@@ -3,6 +3,8 @@ package fr.univlyon1.m1if.m1if13.usersspringboot.controller;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import fr.univlyon1.m1if.m1if13.usersspringboot.DAO.UserDao;
+import fr.univlyon1.m1if.m1if13.usersspringboot.exception.BadTokenException;
+import fr.univlyon1.m1if.m1if13.usersspringboot.exception.UnauthorizedException;
 import fr.univlyon1.m1if.m1if13.usersspringboot.exception.UserNotFoundException;
 import fr.univlyon1.m1if.m1if13.usersspringboot.model.User;
 import fr.univlyon1.m1if.m1if13.usersspringboot.utils.JWTHelper;
@@ -36,7 +38,7 @@ import java.net.URI;
                 @Server(description = "VM(https)", url ="https://192.168.75.9")
         })
 @Tag(name = "operation", description = "l'API Operations")
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:80", "http://localhost:8080", "http://localhost" , "http://192.168.75.9" , "https://192.168.75.9"})
+@CrossOrigin(origins = {"http://localhost:3376","http://localhost:3000", "http://localhost:80", "http://localhost:8080", "http://localhost" , "http://192.168.75.9" , "https://192.168.75.9"})
 @Controller
 public class OperationController {
 
@@ -61,7 +63,7 @@ public class OperationController {
             @ApiResponse(responseCode = "404", description = "User not found", content = {@Content}),
             @ApiResponse(responseCode = "400", description = "Wrong pass word", content = {@Content})
     })
-    @PostMapping("/login")
+    @PostMapping(value = "/login")
     public ResponseEntity<Void> login(@RequestParam("login") String login, @RequestParam("password") String password, @RequestHeader("Origin") String origin) throws AuthenticationException {
         ResponseEntity<Void> result;
         boolean userExists = users.get(login).isPresent();
@@ -129,16 +131,18 @@ public class OperationController {
             @ApiResponse(responseCode = "400", description = "Bad token", content = {@Content}),
             @ApiResponse(responseCode = "401", description = "Unauthorised (token non valide)", content = {@Content})
     })
-    @GetMapping("/authenticate")
+    @GetMapping(value = "/authenticate", consumes = {"multipart/form-data", "application/x-www-form-urlencoded"})
     public ResponseEntity<Void> authenticate(@RequestParam("token") String auth, @RequestParam("origin") String origin) {
         String token = auth.substring(7);
         String verify = jwt.verifyToken(token, origin);
-
+        try{
         if (verify.equals("Not valid")) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new UnauthorizedException("token pas valide");
         } else if (verify.equals("Bad token")) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        } else {
+            throw new BadTokenException("Problème de verification du token");
+        } else if(verify.equals("No Token")){
+            throw new BadTokenException("Token n'existe pas");
+        }else {
             DecodedJWT jwty = JWT.decode(token);
             String loginToSend = jwty.getClaim("login").asString();
             URI location = ServletUriComponentsBuilder
@@ -147,6 +151,16 @@ public class OperationController {
             headers.add("Location", location.toString() + "/users/" + loginToSend);
             headers.add("Access-Control-Expose-Headers", "Location");
             return ResponseEntity.status(HttpStatus.NO_CONTENT).headers(headers).build();
+        }}
+        catch(Exception e){
+            e.printStackTrace();
+            if(e instanceof UnauthorizedException){
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage(), e);
+            }else if(e instanceof  BadTokenException){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+            }else{
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+            }
         }
     }
 }

@@ -27,6 +27,16 @@ public class CustomResponseExceptionHandler extends ResponseEntityExceptionHandl
         return new ResponseEntity<Object>(exceptionResponse, HttpStatus.NOT_FOUND);
 
     }
+    @ExceptionHandler(BadTokenException.class)
+    public final ResponseEntity<Object> handleBadToken(BadTokenException ex, WebRequest req) throws Exception{
+        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(), req.getDescription(false));
+        return new ResponseEntity<Object>(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(UnauthorizedException.class)
+    public final ResponseEntity<Object> handleUnauthorized(UnauthorizedException ex, WebRequest req) throws Exception{
+        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(), req.getDescription(false));
+        return new ResponseEntity<Object>(exceptionResponse, HttpStatus.UNAUTHORIZED);
+    }
 
     /*@ExceptionHandler(Exception.class)
     public final ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest req) throws  Exception{
