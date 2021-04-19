@@ -1,8 +1,217 @@
-<html>
+<!DOCTYPE html>
+<html lang="fr">
     <head>
+        <meta charset="UTF-8" />
+        <title>Solid Rain - Confidential</title>
+        <link
+            rel="shortcut icon"
+            href="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fpngimg.com%2Fuploads%2Fmeteor%2Fmeteor_PNG37.png&f=1&nofb=1"
+        />
+        <link
+            rel="stylesheet"
+            href="https://unpkg.com/purecss@1.0.0/build/pure-min.css"
+            integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w"
+            crossorigin="anonymous"
+        />
+        <link
+            rel="stylesheet"
+            href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+            integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+            crossorigin=""
+        />
+        <script
+            src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+            integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+            crossorigin=""
+        ></script>
+        <script
+            src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+            crossorigin="anonymous"
+        ></script>
+        <script src="https://unpkg.com/mustache@latest"></script>
+        <link rel="stylesheet" href="css/style.css" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
     </head>
+
     <body>
-        <img src="./img/bancrupcy.jpg" alt="bancrupcy">
-        <p>i declare bankruptcy</p>
+        <header>
+            <h1>Solid Rain <span class="xirod">Confidential</span></h1>
+        </header>
+
+        <section>
+            <h2>Carte</h2>
+            <div id="map"></div>
+        </section>
+
+        <section>
+            <h2>ZRR</h2>
+            <div class="content">
+                <p>
+                    Appuyez sur "Set" pour sélectionner un point de la carte :
+                </p>
+                <form
+                    id="setCorner1"
+                    onsubmit="return updateCorner1();"
+                    class="pure-form"
+                >
+                    <fieldset>
+                        <!--input type="submit" value="Set" class="pure-button pure-button-active"-->&nbsp;&nbsp;
+                        <label for="lat1">Lattitude : </label>
+                        <input type="text" id="lat1" name="lat1" />&nbsp;&nbsp;
+                        <label for="lon1">Longitude : </label>
+                        <input type="text" id="lon1" name="lon1" />
+                    </fieldset>
+                </form>
+                <form
+                    id="setCorner2"
+                    onsubmit="return updateCorner2();"
+                    class="pure-form"
+                >
+                    <fieldset>
+                        <!--input type="submit" value="Set" class="pure-button pure-button-active"-->&nbsp;&nbsp;
+                        <label for="lat2">Lattitude : </label>
+                        <input type="text" id="lat2" name="lat2" />&nbsp;&nbsp;
+                        <label for="lon2">Longitude : </label>
+                        <input type="text" id="lon2" name="lon2" />
+                    </fieldset>
+                </form>
+                <form
+                    id="sendZrr"
+                    onsubmit="return sendZrr();"
+                    class="pure-form"
+                >
+                    <fieldset>
+                        <label for="sendZrr"
+                            >Valider la position de la ZRR : </label
+                        >&nbsp;&nbsp;
+                        <input
+                            type="submit"
+                            value="Send"
+                            class="pure-button pure-button-active"
+                        />
+                    </fieldset>
+                </form>
+            </div>
+        </section>
+
+        <section>
+            <h2>Paramètres</h2>
+            <div class="content">
+                <form id="setTtl" onsubmit="return sendTTL()" class="pure-form">
+                    <fieldset>
+                        <label
+                            >Temps de Tranquillité et de Liberté (TTL) par
+                            défaut :
+                        </label>
+                        <input
+                            type="number"
+                            min="0"
+                            max="180"
+                            value="60"
+                            id="ttl"
+                        />
+                        <input
+                            type="submit"
+                            value="Set"
+                            class="pure-button pure-button-active"
+                        />
+                    </fieldset>
+                </form>
+                <form
+                    id="setMeteorType"
+                    onsubmit="return sendMETEOR();"
+                    class="pure-form"
+                >
+                    <fieldset>
+                        <label for="meteorType">Type de météorite : </label>
+                        <select
+                            name="meteorType"
+                            id="pet-select"
+                            onchange="return sendMETEOR();"
+                        >
+                            <option value="astraZ" selected>Astra-Z</option>
+                            <option value="astraX">Astra-X</option>
+                            <option value="betaX">Bêta-X</option>
+                        </select>
+                        <br />
+                        <label for="sendMeteor"
+                            >Passer en mode de déclenchement d'impact (démarre
+                            le jeu) :
+                        </label>
+                        <input
+                            type="submit"
+                            name="sendMeteor"
+                            value="Feu!"
+                            class="pure-button pure-button-active"
+                        />
+                    </fieldset>
+                </form>
+            </div>
+        </section>
+
+        <script id="1playerTemplate" type="x-tmpl-mustache">
+            <li>
+                <a href={{url}}> <img src="{{url}}" alt="pic{{id}}"/></a>
+                id : {{id}}
+                current position {{position}}
+                satus {{survivant}}
+            </li>
+        </script>
+
+        <script id="userTemplate" type="x-tmpl-mustache">
+            <li>
+                <form
+                    id="addUser"
+                    onsubmit="return addPlayer('{{login}}');"
+                    class="pure-form"
+                >
+                    <fieldset>
+                        <label for="addUser">Ajouter {{login}} {{#connected}} (connecté) {{/connected}} : </label>
+                        <input
+                            type="submit"
+                            value="Add"
+                            class="pure-button pure-button-active"
+                        />
+                    </fieldset>
+                </form>
+            </li>
+        </script>
+
+        <script id="playerTemplate" type="x-tmpl-mustache">
+            <li>
+                <form
+                    id="addUser"
+                    onsubmit="return deletePlayer('{{_id}}');"
+                    class="pure-form"
+                >
+                    <fieldset>
+                        <p><img src="{{_url}}" style="width : 100%; max-width : 70px"></p>
+                        <p> id : {{_id}} </p>
+                        <p>ttl : {{_ttl}}</p>
+                        <ul>{{#_trophys}}
+                            <li>{{.}}</li>
+                        {{/_trophys}}</ul>
+                        <input
+                            type="submit"
+                            value="Delete"
+                            class="pure-button pure-button-active"
+                        />
+                    </fieldset>
+                </form>
+            </li>
+        </script>
+
+        <section>
+            <h2>Utilisateurs</h2>
+            <div class="content">
+                <h4>Users</h4>
+                <ul id="usersList"></ul>
+                <h4>Players</h4>
+                <ul id="playersList"></ul>
+            </div>
+        </section>
+        <script src="./js/map.js"></script>
+        <script src="./js/form.js"></script>
     </body>
 </html>
