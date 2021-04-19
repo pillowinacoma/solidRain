@@ -4,4 +4,12 @@ const Roles = {
     METEORITE: "meteorite"
 }
 
-module.exports = Roles;
+const Composition = {
+    astraZ : "astraZ",
+    astraX : "astraX",
+    betaX  :"betaX"
+}
+
+module.exports = {
+    Roles, Composition
+};

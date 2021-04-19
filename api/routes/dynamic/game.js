@@ -1,5 +1,5 @@
 const Zrr = require('./zzr');
-const Roles = require('./enum')
+const Roles = require('./enum').Roles;
 
 
 const distance = (p1, p2) => {
@@ -34,15 +34,19 @@ class Game {
     }
     deleteRessource(resId) {
         //find the ressource
-        resIndexToDelete = this._ressources.reduce((acc, curr, index) => {
+        const resIndexToDelete = this._ressources.reduce((acc, curr, index) => {
             if (curr.id === resId) {
                 acc.push(index);
             }
             return acc;
-        }, [])
-        resIndexToDelete.forEach((elem, idx) => {
-            this._ressources.splice(elem - idx, 1);
-        });
+        }, []);
+        console.log(resIndexToDelete);
+        if (resIndexToDelete) {
+            resIndexToDelete.forEach((elem, idx) => {
+                this._ressources.splice(elem - idx, 1);
+
+            });
+        }
     }
     start() {
         this._started = true;
@@ -63,7 +67,7 @@ class Game {
         })
     }
 
-    getPlayerById(id){
+    getPlayerById(id) {
         return this.ressources.filter((player) => {
             return player._role === Roles.PLAYER && player.id === id;
         })

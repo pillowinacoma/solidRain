@@ -2,7 +2,7 @@ const Game = require("./game");
 const Meteorite = require("./meteorite");
 const Zrr = require("./zzr");
 const Player = require('./player');
-const Roles = require("./enum");
+const Roles = require("./enum").Roles;
 
 const game = null;
 

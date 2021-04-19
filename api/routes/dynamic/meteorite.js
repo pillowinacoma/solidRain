@@ -1,10 +1,19 @@
 const GeoRessource = require("./geoRessource");
-const Roles = require('./enum')
+const Roles = require("./enum").Roles;
+const Composition = require("./enum").Composition;
 
 class Meteorite extends GeoRessource {
-    constructor(id, pos, url, composition = null, role = Roles.METEORITE) {
+    constructor(
+        id,
+        pos,
+        composition = Composition.astraZ,
+        url,
+        role = Roles.METEORITE
+    ) {
         super(id, pos, url, role);
         this._composition = composition;
+        this._consumed = false;
+        this._consumerId = null;
     }
 
     get composition() {
@@ -15,6 +24,18 @@ class Meteorite extends GeoRessource {
         this._composition = x;
     }
 
+    get consumed() {
+        return this._consumed;
+    }
+
+    get consumerId() {
+        return this._consumerId;
+    }
+
+    consume(conId) {
+        this._consumed = true;
+        this._consumerId = conId;
+    }
 }
 
 module.exports = Meteorite;

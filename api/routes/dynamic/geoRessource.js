@@ -1,10 +1,10 @@
-const Enum = require('./enum');
+const Enum = require('./enum').Roles;
 
 class GeoRessource {
     constructor(
         id,
         position = [0, 0],
-        url = "https://picsum.photos/200/300",
+        url = "https://picsum.photos/200/200",
         role = Enum.Roles.PLAYER
     ) {
         this._id = id;
