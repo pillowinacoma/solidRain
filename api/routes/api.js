@@ -78,6 +78,7 @@ const loginUser = (req, res) => {
 };
 
 const logoutUser = (req, res) => {
+    console.log(res.headers);
     authUser(req).then((response) => {
         headers = {
             headers: {
