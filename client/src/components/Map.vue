@@ -1,12 +1,12 @@
 <template>
-    <section>
-        <h2>Carte</h2>
-        <p class="content">
-            <strong>TODO :</strong> mettre À jour les positions des différents
-            objets sur la carte.
-        </p>
-        <div id="map" class="map"></div>
-    </section>
+  <section>
+    <h2>Carte</h2>
+    <p class="content">
+      <strong>TODO :</strong> mettre À jour les positions des différents objets
+      sur la carte.
+    </p>
+    <div id="map" class="map"></div>
+  </section>
 </template>
 
 <script>
@@ -30,7 +30,7 @@ let mymap = {};
 export default {
     name: "Map",
     methods: {
-        // ProcÃ©dure de mise Ã  jour de la map
+    // ProcÃ©dure de mise Ã  jour de la map
         updateMap: function () {
             // Affichage Ã  la nouvelle position
             mymap.setView([lat, lng], zoom);
@@ -40,7 +40,7 @@ export default {
         },
     },
     async beforeMount() {
-        // HERE is where to load Leaflet components!
+    // HERE is where to load Leaflet components!
         const L = await import("leaflet");
         // ProcÃ©dure d'initialisation
         mymap = L.map("map", {
@@ -56,14 +56,14 @@ export default {
                 maxZoom: 22,
                 minZoom: 1,
                 attribution:
-                    'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-                    '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-                    'Imagery Â© <a href="https://www.mapbox.com/">Mapbox</a>',
+          'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+          '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+          'Imagery Â© <a href="https://www.mapbox.com/">Mapbox</a>',
                 id: "mapbox/streets-v11",
                 tileSize: 512,
                 zoomOffset: -1,
                 accessToken:
-                    "pk.eyJ1IjoibTFpZjEzIiwiYSI6ImNqczBubmhyajFnMnY0YWx4c2FwMmRtbm4ifQ.O6W7HeTW3UvOVgjCiPrdsA",
+          "pk.eyJ1IjoibTFpZjEzIiwiYSI6ImNqczBubmhyajFnMnY0YWx4c2FwMmRtbm4ifQ.O6W7HeTW3UvOVgjCiPrdsA",
             }
         ).addTo(mymap);
 
@@ -85,8 +85,8 @@ export default {
 
 <style scoped>
 .map {
-    height: 400px;
-    width: 100%;
-    border: 1px solid;
+  height: 400px;
+  width: 100%;
+  border: 1px solid;
 }
 </style>

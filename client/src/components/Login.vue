@@ -12,7 +12,8 @@
             id="password"
         />
         <br />
-        <button v-on:click="logged">Send</button>
+        <button v-on:click="loggingIn">Send</button>
+        <button v-on:click="logout">Logout</button>
     </form>
 </template>
 
@@ -27,11 +28,33 @@ export default {
 
     name: "Login",
     methods: {
-        logged() {
+        loggingIn() {
             console.log("login", this.loginVal);
             console.log("password", this.passwordVal);
-
-            this.$router.push('/game')
+            this.$store
+                .dispatch("player/login", {
+                    login: this.loginVal,
+                    password: this.passwordVal,
+                })
+                .then((succ) => {
+                    console.log("LOGGED IN", succ);
+                    //this.$router.push('/');
+                })
+                .catch((err) => {
+                    console.log("ERROR", err);
+                });
+        },
+        logout() {
+            console.log("humm");
+            this.$store
+                .dispatch("player/logout", null)
+                .then((succ) => {
+                    console.log("SUCCESS", succ);
+                    sessionStorage.clear();
+                })
+                .catch((err) => {
+                    console.log("ERR", err);
+                });
         },
     },
 };
