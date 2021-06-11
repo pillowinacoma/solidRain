@@ -1,0 +1,70 @@
+@font-face {
+	font-family: space;
+	src: url(./fonts/space_age.ttf);
+}
+
+@font-face {
+	font-family: nasalization;
+	src: url(./fonts/nasalization-rg.ttf);
+}
+
+@font-face {
+	font-family: xirod;
+	src: url(./fonts/xirod.ttf);
+}
+
+body {
+	background-color: #081F1F;
+	background-image: url('../img/meteors.jpg');
+	background-size: cover;
+	background-blend-mode: screen;
+	color: silver;
+	font-family: nasalization;
+	padding: 0 5% 0 5%;
+}
+
+h1 {
+	font-family: space;
+	font-weight: bolder;
+	font-size: 4.5em;
+}
+
+h2 {
+	font-family: space;
+	font-weight: bold;
+	font-size: 2em;
+}
+
+a:link {
+	color: grey;
+}
+
+#map {
+	height: 400px;
+	width: 100%;
+	border: 1px solid;
+}
+
+input, input[type=submit], select {
+	background-color: #2F4F4F !important;
+	color: lightgray;
+	border: 1px solid;
+}
+
+.xirod {
+	font-family: xirod;
+	font-size: 0.8em;
+}
+
+.content {
+	background-color: #081F1F;
+	border: 1px solid;
+	padding: 5px;
+	width: 100%;
+}
+
+.icon {
+	width: 50px;
+	border-radius: 50%;
+	opacity: 50%;
+}
