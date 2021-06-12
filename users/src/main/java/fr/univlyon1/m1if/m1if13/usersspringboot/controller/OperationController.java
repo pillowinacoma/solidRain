@@ -38,7 +38,7 @@ import java.net.URI;
                 @Server(description = "VM(https)", url ="https://192.168.75.9")
         })
 @Tag(name = "operation", description = "l'API Operations")
-@CrossOrigin(origins = {"http://localhost:3376","http://localhost:3000", "http://localhost:80", "http://localhost:8080", "http://localhost" , "http://192.168.75.9" , "https://192.168.75.9"})
+@CrossOrigin(origins = {"http://localhost:3376","http://localhost:3000", "http://localhost:80", "http://localhost:8080", "http://localhost" , "http://192.168.75.9" , "https://192.168.75.9", "https://localhost:3376","https://localhost:3000", "https://localhost:80", "https://localhost:8080", "https://localhost","http://192.168.75.9:3376" , "https://192.168.75.9:3376", "http://192.168.75.9:3000" , "https://192.168.75.9:3000" })
 @Controller
 public class OperationController {
 
