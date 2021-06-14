@@ -1,6 +1,5 @@
 <template>
     <form id="loginForm" v-on:submit.prevent="onSubmit">
-        <p>{{ loginVal }}</p>
         <label for="login">Login :</label>
         <input v-model="loginVal" type="text" name="login" id="login" />
         <br />
@@ -12,12 +11,14 @@
             id="password"
         />
         <br />
+        <h1>{{ login }}</h1>
         <button v-on:click="loggingIn">Send</button>
         <button v-on:click="logout">Logout</button>
     </form>
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
     data() {
         return {
@@ -27,10 +28,11 @@ export default {
     },
 
     name: "Login",
+    computed: {
+        ...mapState("player", ["login"]),
+    },
     methods: {
         loggingIn() {
-            console.log("login", this.loginVal);
-            console.log("password", this.passwordVal);
             this.$store
                 .dispatch("player/login", {
                     login: this.loginVal,
@@ -43,9 +45,16 @@ export default {
                 .catch((err) => {
                     console.log("ERROR", err);
                 });
+            this.$store
+                .dispatch("player/getMe")
+                .then((succ) => {
+                    console.log(succ);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
         },
         logout() {
-            console.log("humm");
             this.$store
                 .dispatch("player/logout", null)
                 .then((succ) => {

@@ -1,15 +1,15 @@
 <template>
   <div class="game">
     <h1>The Game</h1>
-    <Map />
+    <Game />
   </div>
 </template>
 <script>
-import Map from "../components/Map";
+import Game from "../components/Game";
 export default {
-    name: "Game",
+    name: "GameVue",
     components: {
-        Map,
+        Game,
     },
 };
 </script>
