@@ -1,7 +1,7 @@
 import axios from "axios";
 import L from "leaflet";
 
-const urlApi = "http://192.168.75.9:3376/api";
+const urlApi = "https://192.168.75.9/game/api";
 const mapStore = {
     state: {
         map: null,
