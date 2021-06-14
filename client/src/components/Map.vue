@@ -235,6 +235,22 @@ export default {
         });
 
         // adding markers
+        this.$store.dispatch("player/setPosition", this.position);
+        const playerPos = this.position;
+        const playerMarker = L.marker(playerPos, {
+            ...playerMarkerOptions,
+            icon: L.icon(pmIcon),
+        })
+            .addTo(this.map)
+            .bindPopup("<strong>Moi</strong>.")
+            .on("dragend", () => {
+                const { lat, lng } = playerMarker.getLatLng();
+                this.$store
+                    .dispatch("player/setPosition", [lat, lng])
+                    .then((succ) => {
+                        this.updateMap();
+                    });
+            });
 
         this.$store.dispatch("map/playerMarker", playerMarker);
         this.$store.dispatch("map/impactMarkers", []);
@@ -256,7 +272,7 @@ export default {
         let geoLocId;
         const options = {
             enableHighAccuracy: true,
-            timeout: 1000,
+            timeout: 5000,
             maximumAge: 0,
         };
 
@@ -264,31 +280,22 @@ export default {
             console.warn("ERROR(" + err.code + "): " + err.message);
         }
 
+
+        let latlng = [0,0];
+        const currMarker = L.marker(latlng, {icon : L.icon(rockIcons["betaX"])}).addTo(this.map);
+
         const success = (pos) => {
             var crd = pos.coords;
 
             const loclat = crd.latitude;
             const loclong = crd.longitude;
-            this.$store.dispatch("player/setPosition", [loclat, loclong]);
-            this.updateMap();
+
+            currMarker.setLatLng([loclat, loclong]);
+
+            
         };
 
         geoLocId = navigator.geolocation.watchPosition(success, error, options);
-        const playerPos = this.position;
-        const playerMarker = L.marker(playerPos, {
-            ...playerMarkerOptions,
-            icon: L.icon(pmIcon),
-        })
-            .addTo(this.map)
-            .bindPopup("<strong>Moi</strong>.")
-            .on("dragend", () => {
-                const { lat, lng } = playerMarker.getLatLng();
-                this.$store
-                    .dispatch("player/setPosition", [lat, lng])
-                    .then((succ) => {
-                        this.updateMap();
-                    });
-            });
     },
 };
 </script>
