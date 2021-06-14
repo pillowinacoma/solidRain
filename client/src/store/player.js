@@ -98,7 +98,7 @@ const playerStore = {
                         `${urlApi}/me`,
                         {
                             headers: {
-                                authorization: context.getters.token,
+                                authorization: sessionStorage.getItem("token"),
                             },
                         },
                         null
@@ -106,6 +106,7 @@ const playerStore = {
                     .then((res) => {
                         if (res.status === 200) {
                             const me = res.data[0];
+                            console.log(me);
                             context.commit("UPDATELOGIN", me._id);
                             context.commit("UPDATEPOSITION", me._position);
                             context.commit("UPDATEROLE", me._role);
@@ -125,7 +126,7 @@ const playerStore = {
             context.commit("UPDATEPOSITION", payload);
             const config = {
                 headers: {
-                    Authorization: context.getters.token,
+                    Authorization: sessionStorage.getItem("token"),
                     "Content-Type": "application/json",
                 },
             };

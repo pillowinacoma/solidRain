@@ -39,19 +39,18 @@ export default {
                     password: this.passwordVal,
                 })
                 .then((succ) => {
-                    console.log("LOGGED IN", succ);
+                    this.$store
+                        .dispatch("player/getMe")
+                        .then((succ) => {
+                            console.log(succ);
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        });
                     //this.$router.push('/');
                 })
                 .catch((err) => {
                     console.log("ERROR", err);
-                });
-            this.$store
-                .dispatch("player/getMe")
-                .then((succ) => {
-                    console.log(succ);
-                })
-                .catch((err) => {
-                    console.log(err);
                 });
         },
         logout() {

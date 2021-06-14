@@ -1,8 +1,8 @@
 <template>
     <section>
-        <p>Temps restant : {{ttl}} s</p>
-        <p>status : {{(survivant == true) ? "surviving" : "wasted"}} </p>
-        <p>{{gagnant? "You Won !" : ""}}</p>
+        <p>Temps restant : {{ ttl }} s</p>
+        <p>status : {{ survivant == true ? "surviving" : "wasted" }}</p>
+        <p>{{ gagnant ? "You Won !" : "" }}</p>
         <p class="content">
             <button @click="harvest">Harvest</button>
         </p>
@@ -78,8 +78,8 @@ export default {
                     const impacts = this.impacts;
                     const tmpctMkrs = this.impactMarkers;
                     const diff = impacts.length - tmpctMkrs.length;
-                    if(impacts.length > 0){
-                        this.$store.dispatch("player/startTimer")
+                    if (impacts.length > 0) {
+                        this.$store.dispatch("player/startTimer");
                     }
 
                     if (diff != 0) {
@@ -158,17 +158,26 @@ export default {
             "center",
         ]),
         ...mapState("game", ["zrr", "otherPlayers", "impacts"]),
-        ...mapState("player", ["position", "trophys","ttl", "gagnant", "survivant"]),
+        ...mapState("player", [
+            "position",
+            "trophys",
+            "ttl",
+            "gagnant",
+            "survivant",
+        ]),
     },
     mounted() {
-        this.impactMarkers.forEach((e) => {
-            const m = { ...{ ...e } };
-            e.addTo(this.map);
-        });
-
-        this.othersMarkers.forEach(([id, mark]) => {
-            mark.addTo(this.map);
-        });
+        if (!("geolocation" in navigator)) {
+            return;
+        }
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                console.log(pos);
+            },
+            (err) => {
+                console.log(err);
+            }
+        );
     },
     async beforeMount() {
         const zoom = this.$store.getters["map/getZoom"];
@@ -226,22 +235,6 @@ export default {
         });
 
         // adding markers
-        this.$store.dispatch("player/setPosition", [lat, lng]);
-        const playerPos = this.position;
-        const playerMarker = L.marker(playerPos, {
-            ...playerMarkerOptions,
-            icon: L.icon(pmIcon),
-        })
-            .addTo(this.map)
-            .bindPopup("<strong>Moi</strong>.")
-            .on("dragend", () => {
-                const { lat, lng } = playerMarker.getLatLng();
-                this.$store
-                    .dispatch("player/setPosition", [lat, lng])
-                    .then((succ) => {
-                        this.updateMap();
-                    });
-            });
 
         this.$store.dispatch("map/playerMarker", playerMarker);
         this.$store.dispatch("map/impactMarkers", []);
@@ -259,6 +252,43 @@ export default {
             });
 
         this.updateMap();
+
+        let geoLocId;
+        const options = {
+            enableHighAccuracy: true,
+            timeout: 1000,
+            maximumAge: 0,
+        };
+
+        function error(err) {
+            console.warn("ERROR(" + err.code + "): " + err.message);
+        }
+
+        const success = (pos) => {
+            var crd = pos.coords;
+
+            const loclat = crd.latitude;
+            const loclong = crd.longitude;
+            this.$store.dispatch("player/setPosition", [loclat, loclong]);
+            this.updateMap();
+        };
+
+        geoLocId = navigator.geolocation.watchPosition(success, error, options);
+        const playerPos = this.position;
+        const playerMarker = L.marker(playerPos, {
+            ...playerMarkerOptions,
+            icon: L.icon(pmIcon),
+        })
+            .addTo(this.map)
+            .bindPopup("<strong>Moi</strong>.")
+            .on("dragend", () => {
+                const { lat, lng } = playerMarker.getLatLng();
+                this.$store
+                    .dispatch("player/setPosition", [lat, lng])
+                    .then((succ) => {
+                        this.updateMap();
+                    });
+            });
     },
 };
 </script>
