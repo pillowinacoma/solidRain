@@ -6,6 +6,7 @@ Projet de M1IF13 - Programmation Web avancé et mobile
 - [fichier YAML](https://forge.univ-lyon1.fr/p1400298/m1if13-2021/-/raw/feature/TP2/users-api.yaml) généré par Swagger
 - Le repertoire /users contient le code Spring Boot
 - Le repertoire /test-cors contient un test avec un client simple
+- Le lien vers la documentation Swagger UI en localhost:8080 est [ici](http://localhost:8080/swagger-ui/index.html?configUrl=/users-api/swagger-config)
 
 ## TP3 & TP4
 - le code de la partie serveur express se trouve dans le repertoir /api
