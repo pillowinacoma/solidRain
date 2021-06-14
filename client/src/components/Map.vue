@@ -14,7 +14,8 @@
 import "leaflet/dist/leaflet.css";
 
 // This part resolves an issue where the markers would not appear in webpack
-import L, { Icon } from "leaflet";
+import {L as Lee} from "leaflet";
+import { Icon } from "leaflet";
 import { mapState } from "vuex";
 import {
     zrrToBounds,
@@ -92,8 +93,8 @@ export default {
                         const impactMarkers = poses
                             .slice(-diff)
                             .map((pos) => {
-                                return L.marker(pos, {
-                                    icon: L.icon(rockIcons["astraZ"]),
+                                return Lee.marker(pos, {
+                                    icon: Lee.icon(rockIcons["astraZ"]),
                                 });
                             })
                             .map((elem) => {
@@ -123,7 +124,7 @@ export default {
                             .map(([id, pos]) => {
                                 return [
                                     id,
-                                    L.marker(pos, { icon: L.icon(othIcon) }),
+                                    Lee.marker(pos, { icon: Lee.icon(othIcon) }),
                                 ];
                             })
                             .map(([id, mark]) => {
