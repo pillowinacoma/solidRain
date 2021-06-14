@@ -106,14 +106,18 @@ const playerStore = {
                     .then((res) => {
                         if (res.status === 200) {
                             const me = res.data[0];
-                            console.log(me);
-                            context.commit("UPDATELOGIN", me._id);
-                            context.commit("UPDATEPOSITION", me._position);
-                            context.commit("UPDATEROLE", me._role);
-                            context.commit("UPDATESURVIVANT", me._survivant);
-                            context.commit("UPDATETROPHYS", me._trophys);
-                            context.commit("UPDATEURL", me._url);
-                            context.commit("UPDATETTL", me._ttl);
+                            if (me) {
+                                console.log(me);
+                                context.commit("UPDATELOGIN", me._id);
+                                context.commit("UPDATEPOSITION", me._position);
+                                context.commit("UPDATEROLE", me._role);
+                                context.commit(
+                                    "UPDATESURVIVANT",
+                                    me._survivant
+                                );
+                                context.commit("UPDATEURL", me._url);
+                                context.commit("UPDATETTL", me._ttl);
+                            }
                             resolve(true);
                         }
                     })

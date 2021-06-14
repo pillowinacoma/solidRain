@@ -14,8 +14,7 @@
 import "leaflet/dist/leaflet.css";
 
 // This part resolves an issue where the markers would not appear in webpack
-import {L as Lee} from "leaflet";
-import { Icon } from "leaflet";
+import L, { Icon } from "leaflet";
 import { mapState } from "vuex";
 import {
     zrrToBounds,
@@ -53,6 +52,7 @@ export default {
                         this.$store.dispatch("player/setSurvivant", false);
                     }
                     if (meteor.impact._composition === "astraX") {
+
                         this.$store.dispatch("player/setGagnant", true);
                     }
                     const trotros = this.trophys;
@@ -93,8 +93,8 @@ export default {
                         const impactMarkers = poses
                             .slice(-diff)
                             .map((pos) => {
-                                return Lee.marker(pos, {
-                                    icon: Lee.icon(rockIcons["astraZ"]),
+                                return L.marker(pos, {
+                                    icon: L.icon(rockIcons["astraZ"]),
                                 });
                             })
                             .map((elem) => {
@@ -124,7 +124,7 @@ export default {
                             .map(([id, pos]) => {
                                 return [
                                     id,
-                                    Lee.marker(pos, { icon: Lee.icon(othIcon) }),
+                                    L.marker(pos, { icon: L.icon(othIcon) }),
                                 ];
                             })
                             .map(([id, mark]) => {
@@ -236,7 +236,7 @@ export default {
         });
 
         // adding markers
-        this.$store.dispatch("player/setPosition", this.position);
+        this.$store.dispatch("player/setPosition", this.map.getCenter());
         const playerPos = this.position;
         const playerMarker = L.marker(playerPos, {
             ...playerMarkerOptions,
@@ -281,22 +281,22 @@ export default {
             console.warn("ERROR(" + err.code + "): " + err.message);
         }
 
-
-        let latlng = [0,0];
-        const currMarker = L.marker(latlng, {icon : L.icon(rockIcons["betaX"])}).addTo(this.map);
+        let latlng = [0, 0];
+        const currMarker = L.marker(latlng, {
+            icon: L.icon(rockIcons["betaX"]),
+        }).addTo(this.map);
 
         const success = (pos) => {
             var crd = pos.coords;
 
             const loclat = crd.latitude;
             const loclong = crd.longitude;
-
-            currMarker.setLatLng([loclat, loclong]);
-
-            
+            console.log("lat", [loclat, loclong]);
+            //currMarker.setLatLng([loclat, loclong]);
+            //this.updateMap();
         };
 
-        geoLocId = navigator.geolocation.watchPosition(success, error, options);
+        //geoLocId = navigator.geolocation.watchPosition(success, error, options);
     },
 };
 </script>
